@@ -1,0 +1,19 @@
+# Salesforce
+.sfdx/
+.sf/
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Logs
+*.log
+
+# Data exports
+data/*.json

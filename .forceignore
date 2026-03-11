@@ -1,0 +1,12 @@
+# Standard ignores
+.forceignore
+
+# LWC config files
+**/jsconfig.json
+**/.eslintrc.json
+
+# LWC Jest tests
+**/__tests__/**
+
+# Scratch org config
+config/

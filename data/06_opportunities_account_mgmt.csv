@@ -1,0 +1,4 @@
+Name,AccountId,Account_Name_Reference,RecordTypeId,StageName,CloseDate,Amount,Type
+HO_Test_Opp_038 - AM Upsell,{{ACCOUNT_ID}},HO_Test_Account_038,0120Y000000Ay9JQAS,Contract received,2026-03-31,8000,Existing Business
+HO_Test_Opp_039 - AM Upsell,{{ACCOUNT_ID}},HO_Test_Account_039,0120Y000000Ay9JQAS,Contract received,2026-03-31,12000,Existing Business
+HO_Test_Opp_040 - AM Upsell,{{ACCOUNT_ID}},HO_Test_Account_040,0120Y000000Ay9JQAS,Contract received,2026-03-31,6500,Existing Business
