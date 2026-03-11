@@ -1,0 +1,101 @@
+Object,Field API Name,Field Label,Type,Required,Length/Precision,Picklist Values
+Onboarding__c,ACM_Assignment_Date__c,ACM Assignment Date,Date,false,,
+Onboarding__c,AE_Handover_Reviewed__c,AE Handover Reviewed,Checkbox,false,,
+Onboarding__c,ATS_Case_Opened__c,ATS Case Opened,Checkbox,false,,
+Onboarding__c,Activation_Confirmed__c,Activation Confirmed,Checkbox,false,,
+Onboarding__c,Call1_Date__c,Call #1 Date,Date,false,,
+Onboarding__c,Call2_Date__c,Call #2 Date,Date,false,,
+Onboarding__c,Call3_Date__c,Call #3 Date,Date,false,,
+Onboarding__c,Call4_Date__c,Call #4 Date,Date,false,,
+Onboarding__c,Call5_Date__c,Call #5 Date,Date,false,,
+Onboarding__c,Call6_Date__c,Call #6 Date (Review),Date,false,,
+Onboarding__c,Close_Off_Date__c,Close-Off Date,Formula (Date),false,,
+Onboarding__c,Current_Day__c,Current Day,Formula (Number),false,"18,0",
+Onboarding__c,Current_Phase__c,Current Phase,Formula (Text),false,,
+Onboarding__c,Customer_Context_Validated__c,Customer Context Validated,Checkbox,false,,
+Onboarding__c,Day0_Date__c,Day 0 Date,Date,false,,
+Onboarding__c,F2F_Date__c,F2F Date,Date,false,,
+Onboarding__c,F2F_Format__c,F2F Format,Picklist,false,,"In-Person; Virtual - TL Approved"
+Onboarding__c,Gate_1_Validated__c,Gate 1 Validated,Formula (Checkbox),false,,
+Onboarding__c,Health_Status_Final__c,Health Status Final,Picklist,false,,"Green; Yellow; Red"
+Onboarding__c,IHC1_Date__c,IHC #1 Date,Date,false,,
+Onboarding__c,Intro_Date__c,Intro Call Date,Date,false,,
+Onboarding__c,Kickoff_Date__c,Kickoff Date,Date,false,,
+Onboarding__c,Kickoff_Date_Tentative__c,Kickoff Date (Tentative),Date,false,,
+Onboarding__c,Onboarding_Medium__c,Onboarding Medium,Picklist,false,,"Virtual; Hybrid; Onsite"
+Onboarding__c,Onboarding_Satisfaction_Score__c,Onboarding Satisfaction Score,Number,false,"4,1",
+Onboarding__c,Ownership_Next_Steps_Clear__c,Ownership & Next Steps Clear,Checkbox,false,,
+Onboarding__c,Review_Date__c,90-Day Review Date,Date,false,,
+Onboarding__c,Review_Format__c,Review Format,Picklist,false,,"Video; Onsite"
+Onboarding__c,Review_SS_Confirmed__c,Review SS Confirmed,Picklist,false,,"Yes; No"
+Onboarding__c,Segment__c,Segment,Picklist,false,,"SMB; Mid-Market; Enterprise"
+Onboarding__c,SLA_Adherence_Score__c,SLA Adherence Score,Percent,false,"5,1",
+Onboarding__c,Self_Check_Completed__c,70-Day Self-Check Completed,Checkbox,false,,
+Onboarding__c,Self_Check_Date__c,70-Day Self-Check Date,Date,false,,
+Onboarding__c,Success_Plan__c,Success Plan,Lookup,false,,
+Onboarding__c,Support_Channels_Explained__c,Support Channels Explained,Checkbox,false,,
+Onboarding__c,Tech_Setup_Path_Confirmed__c,Tech Setup Path Confirmed,Checkbox,false,,
+Onboarding__c,TL_Gate_Date__c,TL Gate Date,Date,false,,
+Onboarding__c,TL_Gate_Readiness__c,TL Gate Readiness,Picklist,false,,"Yes - Ready; No - Must-Close Items Open"
+Onboarding__c,TL_Gate_Result__c,TL Gate Result,Picklist,false,,"Approved; Conditional; Escalate"
+Onboarding__c,Touchpoint_Calendar_Set__c,Touchpoint Calendar Set,Checkbox,false,,
+Success_Plan__c,Account__c,Account,Lookup,true,,
+Success_Plan__c,Adoption_Gap_Analysis__c,Adoption Gap Analysis,LongTextArea,false,32768,
+Success_Plan__c,ATS_Integration_ETA__c,ATS Integration ETA,Picklist,false,,"<1 Week; 1-2 Weeks; 2-4 Weeks; >4 Weeks"
+Success_Plan__c,ATS_Setup_Path__c,ATS Setup Path,Picklist,false,,"<1 Week; 1-2 Weeks; 2-4 Weeks; >4 Weeks"
+Success_Plan__c,Blockers_Open_Items__c,Blockers / Open Items,LongTextArea,false,32768,
+Success_Plan__c,Budget_Timeline__c,Budget Timeline,Text,false,255,
+Success_Plan__c,Campaign_Feedback__c,Campaign Feedback,LongTextArea,false,32768,
+Success_Plan__c,Customer_Goal__c,Customer Goal,Text,false,255,
+Success_Plan__c,Customer_Goal_Confirmed__c,Customer Goal Confirmed,Checkbox,false,,
+Success_Plan__c,Early_Go_Live_Decision__c,Early Go-Live Decision,Picklist,false,,"Not Applicable - Standard; Early Go-Live - Customer Request"
+Success_Plan__c,Expectation_Below_Comment__c,Expectation Below Comment,LongTextArea,false,32768,
+Success_Plan__c,Expectation_Delta__c,Expectation Delta,Picklist,false,,"Within Range (+-20%); Above Expectation; Below Expectation - Explained"
+Success_Plan__c,Expansion_Signals__c,Expansion Signals,Picklist,false,,"None; Additional Locations; Additional Products; Team Growth; Multiple Signals"
+Success_Plan__c,Forward_Planning__c,Forward Planning (3-12M),LongTextArea,false,32768,
+Success_Plan__c,Goal_Reconnect_Notes__c,Goal Reconnect Notes,LongTextArea,false,32768,
+Success_Plan__c,Health_Red_Comment__c,Health Red Comment,LongTextArea,false,32768,
+Success_Plan__c,Health_Status__c,Health Status,Picklist,false,,"Green; Yellow; Red"
+Success_Plan__c,Health_Yellow_Comment__c,Health Yellow Comment,LongTextArea,false,32768,
+Success_Plan__c,Initial_Risk_Assessment__c,Initial Risk Assessment,Text,false,255,
+Success_Plan__c,Internal_Dynamics__c,Internal Dynamics,LongTextArea,false,32768,
+Success_Plan__c,KPI_Draft__c,KPI Draft,LongTextArea,false,32768,
+Success_Plan__c,Long_Term_View__c,Long-Term View (3-12M),LongTextArea,false,32768,
+Success_Plan__c,Next_Step_Recommendation__c,Next-Step Recommendation (0-3M),LongTextArea,false,32768,
+Success_Plan__c,Next_Step_Risk_Comment__c,Next Step Risk Comment,LongTextArea,false,32768,
+Success_Plan__c,Next_Step_Signal__c,Next Step,Picklist,false,,"- (not yet assessed); Renewal Likely; Conversion Possible; Extension; At Risk; Churn"
+Success_Plan__c,O_Min_Gaps__c,O-Min Gaps,LongTextArea,false,32768,
+Success_Plan__c,O_Min_Not_Reached_Comment__c,O-Min Not Reached Comment,LongTextArea,false,32768,
+Success_Plan__c,O_Min_Status__c,O-Min Status,Picklist,false,,"Pending; Validated; Not Reached"
+Success_Plan__c,Onboarding__c,Onboarding,Lookup,false,,
+Success_Plan__c,Open_Items_Closed__c,Open Items Closed,LongTextArea,false,32768,
+Success_Plan__c,Open_Items_F2F__c,Open Items for F2F,LongTextArea,false,32768,
+Success_Plan__c,Operating_Model__c,Operating Model,LongTextArea,false,32768,
+Success_Plan__c,Operational_Maturity__c,Operational Maturity,Picklist,false,,"Fully Independent; Partially Independent; Not Independent"
+Success_Plan__c,Operator_Availability__c,Operator Availability,Picklist,false,,"High; Medium; Low"
+Success_Plan__c,Operator_Sentiment__c,Operator Sentiment,Picklist,false,,"Positive / Engaged; Neutral; Skeptical; Disengaged"
+Success_Plan__c,Org_Picture__c,Complete Org Picture,LongTextArea,false,32768,
+Success_Plan__c,Performance_Down_Comment__c,Performance Down Comment,LongTextArea,false,32768,
+Success_Plan__c,Performance_Review_Notes__c,Performance Review Notes,LongTextArea,false,32768,
+Success_Plan__c,Performance_Signal__c,Performance Signal,Picklist,false,,"Up; Flat; Down"
+Success_Plan__c,Performance_vs_Goal__c,Performance vs Goal,LongTextArea,false,32768,
+Success_Plan__c,Primary_Operator__c,Primary Operator,Lookup,false,,
+Success_Plan__c,Progress_vs_Goals__c,Progress vs Goals,LongTextArea,false,32768,
+Success_Plan__c,Quick_Wins__c,Quick Wins,Text,false,255,
+Success_Plan__c,Recruiting_Process_E2E__c,Recruiting Process E2E,LongTextArea,false,32768,
+Success_Plan__c,Relationship_Context_Check__c,Relationship Context Check,LongTextArea,false,32768,
+Success_Plan__c,Results_ROI__c,Results & ROI,LongTextArea,false,32768,
+Success_Plan__c,Risks_Mitigation__c,Risks & Mitigation,LongTextArea,false,32768,
+Success_Plan__c,SS_Alignment__c,SS Alignment,LongTextArea,false,32768,
+Success_Plan__c,SS_Engagement_Status__c,SS Engagement Status,Picklist,false,,"Not Connected; Attempt 1 - No Response; Attempt 2 - No Response; Connected; F2F Attended"
+Success_Plan__c,SS_Present_at_F2F__c,SS Present at F2F,Picklist,false,,"Yes; No"
+Success_Plan__c,Senior_Stakeholder__c,Senior Stakeholder,Lookup,false,,
+Onboarding_SLA_Rule__mdt,Anchor_Field__c,Anchor Field,Text,false,100,
+Onboarding_SLA_Rule__mdt,Breach_Action__c,Breach Action,Picklist,false,,"Now-Item; Now-Item + TL Alert; Close-Off Blocked"
+Onboarding_SLA_Rule__mdt,Critical_Threshold_Offset__c,Critical Threshold Offset,Number,false,"4,0",
+Onboarding_SLA_Rule__mdt,Date_Field__c,Date Field,Text,false,100,
+Onboarding_SLA_Rule__mdt,Sort_Order__c,Sort Order,Number,false,"4,0",
+Onboarding_SLA_Rule__mdt,Touchpoint_Name__c,Touchpoint Name,Text,false,80,
+Onboarding_SLA_Rule__mdt,Unit__c,Unit,Picklist,false,,"CD (Calendar Days); WD (Working Days)"
+Onboarding_SLA_Rule__mdt,Window_End_Offset__c,Window End Offset,Number,false,"4,0",
+Onboarding_SLA_Rule__mdt,Window_Start_Offset__c,Window Start Offset,Number,false,"4,0",

@@ -1,0 +1,4 @@
+Name,AccountId,Account_Name_Reference,RecordTypeId,StageName,CloseDate,Amount,Type,Allow_Closed_Won__c
+HO_Test_Opp_038 - Won,{{ACCOUNT_ID}},HO_Test_Account_038,0121v000000z2JFAAY,Closed Won,2026-01-15,23000,Existing Business,true
+HO_Test_Opp_039 - Won,{{ACCOUNT_ID}},HO_Test_Account_039,0121v000000z2JFAAY,Closed Won,2026-01-20,32500,Existing Business,true
+HO_Test_Opp_040 - Won,{{ACCOUNT_ID}},HO_Test_Account_040,0121v000000z2JFAAY,Closed Won,2026-01-25,17500,Existing Business,true

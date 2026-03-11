@@ -1,0 +1,331 @@
+Category,Stage,Trigger,Scenario,Expected Result,Observed Result,Test Records (Sandbox),Test Passed? (Sandbox),Test Passed? (Review),Test Passed? (Production),Follow-Up / Comment
+Flow Trigger - SLA 1,FLOW-1,Opp Stage = Contract Received,"Update Opportunity Stage to ""Contract received""
+- Pilot_Opportunity__c formula = true
+- Opportunity Owner.GTM_Motion_User__c = 'Subscription New Business'
+- Stage changed FROM any other stage TO 'Contract received'","- Customer_360__c record created with:
+  • Account__c = Opportunity.AccountId
+  • Type__c = 'Pilot Handover'
+  • Documentation_Status__c = 'Not Started'
+- AE Task created with:
+  • Subject from $Label.Handover_AE_Task_Subject
+  • WhatId = Linked via ON_Opportunity__c or Opportunity.Id
+  • Linked_Opportunity__c = Opportunity reference
+  • Related_Account__c = Account.Id
+  • OwnerId = Opportunity.OwnerId
+  • ActivityDate = Today + 1 working day (excludes weekends)
+  • Priority = 'High'
+  • Status = 'Open'",,,,,,SLA 1: 1 working day for AE. Filter uses Pilot_Opportunity__c formula + GTM Motion
+Flow Trigger - SLA 1,FLOW-2,Contract Received (Friday),"Update Opportunity Stage to ""Contract Received"" on a Friday
+- Verify AE Task due date uses working days","- AE Task ActivityDate = Monday (1 working day, skips weekend)
+- Working days calculation excludes Saturday/Sunday",,,,,,AE Task now uses working days (not calendar days)
+Flow Trigger - SLA 1,FLOW-3,Contract Received (Existing C360),"Update Opportunity Stage to ""Contract received""
+- Account already has Customer_360__c record with Status = 'In Progress'
+- Pilot_Opportunity__c = true","- NEW Customer_360__c record IS created (Flow has no duplicate check)
+- AE Task created
+- NOTE: Duplicate C360 records may exist - wizard handles by finding latest non-completed record",,,,,,Flow creates new C360 each trigger - wizard finds correct record via query
+Flow Trigger - SLA 2,FLOW-4,Opp Stage = Closed Won,"Update Opportunity Stage to ""Closed Won""
+- Pilot_Opportunity__c formula = true
+- Opportunity Owner.GTM_Motion_User__c = 'Subscription New Business'
+- Stage changed FROM any other stage TO 'Closed Won'","- ACM Task created with:
+  • Subject from $Label.Handover_ACM_Task_Subject ('Internal Handover Call planen')
+  • OwnerId = Account.OwnerId (ACM)
+  • WhatId = Opportunity.Id
+  • Related_Account__c = Account.Id
+  • ActivityDate = Today + 3 working days
+  • Priority = 'High'
+  • Status = 'Open'
+- NO new Customer_360__c created by Closed Won path",,,,,,SLA 2: 3 working days for ACM. Task links to Opportunity not Account
+Flow Trigger - SLA 2,FLOW-5,Closed Won (Friday),"Update Opportunity Stage to ""Closed Won"" on a Friday
+- Verify ACM Task due date uses working days","- ACM Task ActivityDate = Wednesday (3 working days: Mon, Tue, Wed)
+- Working days calculation excludes Saturday/Sunday",,,,,,Verify weekend exclusion in due date
+Flow Trigger - SLA 2,FLOW-6,Closed Won (No C360 exists),"Update Opportunity directly to ""Closed Won"" (edge case)
+- Account does NOT have existing Customer_360__c record","- Flow should handle gracefully
+- Either: Create C360 + both tasks OR log warning and skip ACM task
+- Document actual behavior",,,,,,Edge case - document expected behavior
+Flow Trigger - SLA 2,FLOW-7,Non-Pilot Opportunity (Negative),"Test Flow filter exclusions:
+Option A: Opportunity Owner.GTM_Motion_User__c != 'Subscription New Business'
+Option B: Pilot_Opportunity__c formula = false (wrong record type or not_a_new_customer__c = true)
+- Move such Opp to Contract Received or Closed Won","- NO Customer_360__c record created
+- NO AE Task created
+- NO ACM Task created
+- Flow entry conditions not met",,,,,,Negative test - verify filter on GTM_Motion_User__c and Pilot_Opportunity__c formula
+Wizard Launch,WIZ-1,Click ""Prepare Handover"" button,"Click ""Prepare Handover"" Quick Action on AE Task
+- Task Status = 'Open'
+- Customer_360__c Status = 'Not Started'","- New browser tab opens with Handover Wizard
+- Original Task record page modal closes automatically
+- Wizard loads at Step 1 (Pre-check)
+- Customer_360__c Status updated to 'In Progress'
+- Timestamp_Step_PreCheck_Started__c populated",,,,,,
+Wizard Launch,WIZ-2,Click ""Prepare Handover"" (Resume),"Click ""Prepare Handover"" on Task
+- Customer_360__c Status = 'In Progress'
+- Current_Wizard_Step__c = 'Notes'
+- Customer_Goals__c has saved data","- Wizard opens at Step 2 (Notes)
+- Previously saved Notes data displayed
+- Pre-check data preserved
+- No timestamp fields overwritten",,,,,,Resume capability test
+Wizard Launch,WIZ-3,Click ""Prepare Handover"" (Completed),"Click ""Prepare Handover"" on Task
+- Task Status = 'Completed'","- Wizard should show completed state or redirect to C360 record
+- User cannot re-edit completed handover",,,,,,Verify completed state handling
+Pre-check Section,PRE-1,Field Display,"Open wizard at Pre-check section
+- Account has all fields populated:
+  • NumberOfEmployees = 150
+  • plOpenJobs__c = '20-49'
+  • ParentId populated
+  • Strategical_Key_Contact__c linked
+  • Key_Contact__c linked","- Account Name displayed with hyperlink
+- Ultimate Parent Account displayed (read-only)
+- Parent Account in lookup field (editable)
+- Employees field shows 150 (editable)
+- Open Jobs dropdown shows '20-49' (editable)
+- GTM Motion displayed (read-only)
+- Estimated Wallet Size displayed (read-only, currency format)
+- Strategic Contact details displayed (read-only)
+- Operational Contact details displayed (read-only)",,,,,,
+Pre-check Section,PRE-2,Edit Employees Field,"Change NumberOfEmployees from 150 to 300
+- Click ""Entwurf speichern""","- Account.NumberOfEmployees updated to 300
+- Success toast displayed
+- Save takes ~4-7 seconds due to Account triggers",,,,,,Performance note: Account DML is slow
+Pre-check Section,PRE-3,Edit Open Jobs Field,"Change plOpenJobs__c from '20-49' to '50-99'
+- Click ""Weiter""","- Account.plOpenJobs__c updated to '50-99'
+- Wizard navigates to Notes section
+- Customer_360__c.Current_Wizard_Step__c = 'Notes'
+- Timestamp_Step_PreCheck_Completed__c populated
+- Timestamp_Step_Notes_Started__c populated",,,,,,
+Pre-check Section,PRE-4,Change Parent Account,"Use lookup to select different Parent Account
+- Click ""Weiter""","- Account.ParentId updated to new selection
+- Ultimate Parent Account display updates (if formula recalcs)",,,,,,
+Pre-check Section,PRE-5,Change Strategic Contact,"Use contact lookup to select different Strategic Contact
+- Click refresh button next to contact details","- Account.Strategical_Key_Contact__c updated
+- Contact details (Name, Email, Phone, Title) refreshed from new Contact record",,,,,,
+Pre-check Section,PRE-6,Change Operational Contact,"Use contact lookup to select different Operational Contact
+- Click refresh button","- Account.Key_Contact__c updated
+- Operational contact details refreshed",,,,,,
+Pre-check Section,PRE-7,No Changes Navigation,"Open Pre-check section
+- Make NO changes
+- Click ""Weiter""","- Navigation is instant (no DML performed)
+- No loading spinner visible
+- Toast shows 'Keine Änderungen zu speichern' or navigates silently",,,,,,Delta save: skip DML when no changes
+Notes Section,NOTE-1,Required Fields - Empty,"Navigate to Notes section
+- Leave ALL fields empty
+- Click ""Weiter""","- Validation error displayed
+- ALL empty required fields highlighted with red border:
+  • Customer Goals (Kundenziele)
+  • Risks (Risiken & Red Flags)
+  • Relationship Rating
+  • Relationship Reason
+  • Key Logistics
+  • Do's
+  • Don'ts
+- Does NOT navigate to Review",,,,,,All fields required for Notes
+Notes Section,NOTE-2,Required Fields - Partial,"Fill only Customer Goals and Risks
+- Leave other fields empty
+- Click ""Weiter""","- Validation error for missing fields:
+  • Relationship Rating
+  • Relationship Reason
+  • Key Logistics
+  • Do's
+  • Don'ts
+- Filled fields retain their values
+- Does NOT navigate",,,,,,
+Notes Section,NOTE-3,Fill All Required Fields,"Fill all Notes fields:
+- Customer Goals = 'Test goals text'
+- Risks = 'Test risks text'
+- Relationship Rating = 8
+- Relationship Reason = 'Reason text'
+- Key Logistics = 'Logistics text'
+- Do's = 'Do this'
+- Don'ts = 'Dont do this'
+- Click ""Weiter""","- All data saved to Customer_360__c:
+  • Customer_Goals__c = 'Test goals text'
+  • Risks__c = 'Test risks text'
+  • Relationship_Rating__c = 8
+  • Relationship_Reason__c = 'Reason text'
+  • Key_Logistics__c = 'Logistics text'
+  • Dos__c = 'Do this'
+  • Donts__c = 'Dont do this'
+- Navigate to Review section
+- Timestamp_Step_Notes_Completed__c populated
+- Timestamp_Step_Review_Started__c populated",,,,,,
+Notes Section,NOTE-4,Back Navigation,"At Notes section with data
+- Click ""Zurück""","- Navigate back to Pre-check
+- Notes data preserved in UI
+- No data loss",,,,,,
+Notes Section,NOTE-5,Save Draft on Notes,"Fill some Notes fields
+- Click ""Entwurf speichern""
+- Close browser tab
+- Reopen wizard","- Partial data saved to Customer_360__c
+- On reopen: Notes section displayed with saved data
+- Current_Wizard_Step__c = 'Notes'",,,,,,
+Review Section,REV-1,Data Display,"Navigate to Review section
+- All Pre-check and Notes data filled","- Pre-check Summary displayed:
+  • Ultimate Parent Account
+  • Parent Account Name
+  • GTM Motion
+  • Employees (formatted)
+  • Open Jobs
+  • Estimated Wallet Size (EUR format)
+- Contact Summary:
+  • Strategic Contact: Name, Email, Title
+  • Operational Contact: Name, Email, Title
+- Notes Summary:
+  • Customer Goals
+  • Risks
+  • Relationship Rating (X / 10 format)
+  • Relationship Reason
+  • Key Logistics
+  • Do's
+  • Don'ts",,,,,,
+Review Section,REV-2,Submit Handover,"At Review section
+- Click ""Handover abschließen""","- Customer_360__c updated:
+  • Documentation_Status__c = 'Completed'
+  • Timestamp_Documentation_Completed__c = Now
+  • ACM_Assignment_Date__c = Today
+- AE Task updated:
+  • Status = 'Completed'
+- NOTE: ACM Task is NOT created here - it is created by Closed Won Flow
+- Success toast displayed
+- Browser tab closes after 1.5s",,,,,,ACM Task decoupled - created by Flow at Closed Won
+Review Section,REV-3,Submit Before Closed Won,"AE submits handover documentation
+- Opportunity still at Contract Received stage
+- ACM Task does not exist yet","- C360 status = 'Completed'
+- AE Task = 'Completed'
+- NO ACM Task yet (will be created when Opp moves to Closed Won)
+- This is valid - AE can complete handover before deal officially closes",,,,,,Valid scenario - handover can precede Closed Won
+Review Section,REV-4,Back from Review,"At Review section
+- Click ""Zurück""","- Navigate back to Notes section
+- All Review summary data preserved",,,,,,
+ACM Task Flow,ACM-1,ACM Task Created (via Closed Won Flow),"After Opportunity moves to Closed Won
+- Login as ACM (Account Owner)
+- Note: ACM Task is created by Flow independent of wizard submission","- Task visible in ACM's task list
+- Task Subject from $Label.Handover_ACM_Task_Subject ('Internal Handover Call planen')
+- Task OwnerId = Account.OwnerId
+- Task WhatId = Opportunity.Id (linked to Opportunity)
+- Task Related_Account__c = Account.Id
+- Task Due Date = Closed Won date + 3 working days
+- NOTE: No Description field set by Flow",,,,,,ACM Task created by Flow at Closed Won. Links to Opp via WhatId
+ACM Task Flow,ACM-2,Complete Handover Button,"As ACM, open the IHC Task
+- Click ""Complete Handover"" Quick Action","- Popup window opens
+- Form displays:
+  • Intro text in German
+  • IHC Completed timestamp (required)
+  • Documentation Quality picklist (required)
+  • Quality Comments textarea (optional)",,,,,,IHC Scheduled timestamp removed - not collected
+ACM Task Flow,ACM-3,IHC Form - Empty Submit,"Click ""Aufgabe abschließen"" with empty fields","- Validation error displayed
+- All 2 required fields highlighted:
+  • IHC Completed
+  • Documentation Quality
+- Does NOT submit",,,,,,Only 2 required fields now (scheduled removed)
+ACM Task Flow,ACM-4,IHC Form - Valid Completed Date,"Enter:
+- IHC Completed = valid datetime
+- Quality = OK
+- Click submit","- Form submits successfully
+- Task marked as Completed
+- Timestamp saved to Task",,,,,,Date validation simplified (no scheduled/completed comparison)
+ACM Task Flow,ACM-5,IHC Form - Valid Submit,"Enter:
+- IHC Completed = 2025-01-15 11:30
+- Quality = 'Minor Gaps'
+- Comments = 'Some fields needed clarification'
+- Click ""Aufgabe abschließen""","- Task updated:
+  • Status = 'Completed'
+  • Timestamp_Internal_HO_Call_Completed__c = 2025-01-15 11:30
+  • Handover_Documentation_Quality__c = 'Minor Gaps'
+  • Handover_Quality_Comments__c = 'Some fields needed clarification'
+- Success toast displayed
+- Popup closes
+- Page refreshes",,,,,,IHC Scheduled not saved (removed from form),
+ACM Task Flow,ACM-6,IHC Quality Options,"Open IHC completion form
+- Check Documentation Quality picklist","- Options available:
+  • OK
+  • Minor Gaps (filled in Internal Handover)
+  • Major Gaps (filled in Internal Handover)",,,,,,
+Time Tracking,TIME-1,Pre-check Time Tracking,"Open wizard at Pre-check
+- Wait 2+ minutes
+- Click ""Weiter"" to Notes","- Customer_360__c.Time_Spent_PreCheck_Minutes__c incremented by ~2
+- Time tracked in background (non-blocking)",,,,,,
+Time Tracking,TIME-2,Notes Time Tracking,"At Notes section
+- Wait 3+ minutes
+- Click ""Weiter"" to Review","- Customer_360__c.Time_Spent_Notes_Minutes__c incremented by ~3",,,,,,
+Time Tracking,TIME-3,Accumulated Time,"At Pre-check, wait 2 min, go to Notes
+- Go back to Pre-check, wait 1 min
+- Go to Notes again","- Time_Spent_PreCheck_Minutes__c = ~3 (accumulated)
+- Time for both sessions added",,,,,,
+Time Tracking,TIME-4,Time < 1 Minute,"Open section, immediately navigate away
+- Time spent < 60 seconds","- No time saved (threshold is 1 minute)
+- No error occurs",,,,,,Skip saving if < 1 minute
+Delta Save,DELTA-1,Account Only Change,"At Pre-check:
+- Change only Employees
+- DO NOT change C360 fields
+- Save","- Only Account DML executed
+- Customer_360__c NOT updated (no changes)",,,,,,
+Delta Save,DELTA-2,C360 Only Change,"At Notes:
+- Change only Customer_Goals__c
+- Save","- Only Customer_360__c DML executed
+- Account NOT updated",,,,,,
+Delta Save,DELTA-3,No Changes Save,"Make no changes
+- Click Save Draft","- Toast: 'Keine Änderungen zu speichern'
+- No DML executed
+- Instant response",,,,,,
+Delta Save,DELTA-4,Multiple Field Changes,"Change:
+- Account.NumberOfEmployees
+- Account.plOpenJobs__c
+- Customer_360__c.Customer_Goals__c
+- Save","- Both Account and Customer_360__c updated
+- Only changed fields in each object",,,,,,
+Permissions,PERM-1,User Without Permission Set,"Login as user without Handover_Wizard_Access
+- Try to access wizard","- Error displayed
+- Cannot view Customer_360__c records
+- Cannot execute Apex methods",,,,,,
+Permissions,PERM-2,User With Permission Set,"Login as user with Handover_Wizard_Access
+- Access wizard","- Full access to wizard
+- Can read/write all fields
+- Quick Actions visible",,,,,,
+Edge Cases,EDGE-1,Long Text Fields,"Enter 5000+ characters in Customer Goals
+- Save","- Data truncated to field max length OR
+- Validation error if exceeds limit",,,,,,Check field max lengths
+Edge Cases,EDGE-2,Special Characters,"Enter special characters in all text fields:
+- Umlauts: äöüß
+- Symbols: €@&<>""
+- Emojis: 🎯","- All characters saved correctly
+- Displayed correctly in Review",,,,,,
+Edge Cases,EDGE-3,Browser Tab Close,"Fill Pre-check, navigate to Notes
+- Close browser tab without saving
+- Reopen wizard","- Data from last save point restored
+- Unsaved Notes changes lost
+- beforeunload warning shown if dirty",,,,,,Unsaved changes warning
+Edge Cases,EDGE-4,Concurrent Edit,"Two users open same handover simultaneously
+- Both make changes
+- Both save","- Last save wins
+- No data corruption
+- Consider: should we add locking?",,,,,,
+Edge Cases,EDGE-5,Network Timeout,"Trigger save during slow network
+- Connection times out","- Error toast displayed
+- Data NOT lost from UI
+- User can retry save",,,,,,
+Edge Cases,EDGE-6,Empty Account Lookups,"Account has no:
+- ParentId
+- Strategical_Key_Contact__c
+- Key_Contact__c","- Fields display as empty/placeholder
+- No errors
+- User can add via lookup",,,,,,
+Regression,REG-1,Full E2E Flow,"Complete flow with new two-SLA trigger system:
+SLA 1 (Contract Received):
+1. Move Opp to Contract Received
+2. Verify C360 + AE Task created (due: +1 working day)
+AE Handover:
+3. Open wizard via Prepare Handover button
+4. Fill Pre-check section
+5. Fill Notes section
+6. Review and Submit
+7. Verify AE Task = Completed + C360 = Completed
+SLA 2 (Closed Won):
+8. Move Opp to Closed Won
+9. Verify ACM Task created (due: +3 working days)
+ACM Completion:
+10. Login as ACM
+11. Complete IHC Task with feedback","All steps complete successfully as documented above",,,,,,Full regression test with new two-trigger flow
+Regression,REG-2,Data Integrity,"After completing E2E:
+- Query Customer_360__c record
+- Verify all fields populated correctly
+- Verify all timestamps present","- All fields have expected values
+- All timestamp fields populated
+- No NULL in required fields",,,,,,
